@@ -34,7 +34,7 @@ export const SOUNDS: Sound[] = [
   },
   { id: "fart", name: "Fart", url: "/sounds/fart.mp3" },
   { id: "fbi-open-up", name: "FBI Open Up", url: "/sounds/fbi-open-up.mp3" },
-  { id: "meaw-meaw", name: "Meaw Meaw Sad", url: "/sounds/meaw-meaw-sad.mp3" },
+  { id: "miaw-miaw", name: "Miaw Miaw Sad", url: "/sounds/miaw-miaw-sad.mp3" },
   {
     id: "ki-hore-hahaha",
     name: "Ki Hore Hahaha",
