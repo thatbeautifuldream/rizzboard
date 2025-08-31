@@ -1,5 +1,6 @@
 import { SoundGrid } from "@/components/sound-grid";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Footer } from "@/components/footer";
 
 export default function Page() {
   return (
@@ -11,14 +12,18 @@ export default function Page() {
         <ThemeToggle />
       </header>
 
-      <section className="mb-6">
-        <p className="text-muted-foreground max-w-prose">
+      <section className="mb-8">
+        <p className="text-muted-foreground leading-relaxed text-sm">
           Tap a card to play/pause. Starting another sound stops the current
-          one. Only one sound plays at a time.
+          one. Only one sound plays at a time. The soundboard is reactive and
+          tracks what you play locally, automatically reordering sounds based on
+          recency to keep your favorites at the top.
         </p>
       </section>
 
       <SoundGrid />
+
+      <Footer />
     </main>
   );
 }
