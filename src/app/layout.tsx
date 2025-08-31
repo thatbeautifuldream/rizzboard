@@ -1,10 +1,12 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type React from "react";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Suspense } from "react";
+import { ClarityProvider } from "@/components/providers/clarity-provider";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +46,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <GoogleAnalytics gaId="G-2X8HJDFJ72" />
+            <ClarityProvider />
           </ThemeProvider>
         </Suspense>
       </body>
