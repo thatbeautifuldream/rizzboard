@@ -18,6 +18,7 @@ export function SoundCard({ id, name, url }: Props) {
   const isPlaying = useSoundStore((s) => s.isPlaying);
   const toggle = useSoundStore((s) => s.toggle);
   const onEnded = useSoundStore((s) => s.onEnded);
+  const incrementUsage = useSoundStore((s) => s.incrementUsage);
 
   // Memoize onend and options so use-sound doesn't recreate on every render
   const handleEnded = React.useCallback(() => onEnded(id), [onEnded, id]);
@@ -33,23 +34,33 @@ export function SoundCard({ id, name, url }: Props) {
 
   const active = currentId === id && isPlaying;
 
+  const handleToggle = React.useCallback(() => {
+    const wasPlaying = active;
+    toggle(id, { play, pause, stop });
+    
+    // Only increment usage when starting to play (not when pausing)
+    if (!wasPlaying && (!currentId || currentId !== id)) {
+      incrementUsage(id);
+    }
+  }, [id, active, currentId, toggle, play, pause, stop, incrementUsage]);
+
   return (
     <div
       className={cn(
         "rounded-lg border bg-card text-card-foreground shadow-sm",
-        "transition-all cursor-pointer hover:shadow-md hover:scale-[1.02] min-h-[80px]",
-        "p-3 flex flex-col justify-between",
+        "transition-all cursor-pointer hover:shadow-md hover:scale-[1.02]",
+        "p-3 flex flex-col justify-between h-full min-h-[80px]",
         active
           ? "border-primary ring-1 ring-primary bg-primary/5"
           : "hover:border-primary/50"
       )}
       role="button"
       tabIndex={0}
-      onClick={() => toggle(id, { play, pause, stop })}
+      onClick={handleToggle}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          toggle(id, { play, pause, stop });
+          handleToggle();
         }
       }}
       aria-pressed={active}
