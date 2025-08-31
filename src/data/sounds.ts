@@ -54,4 +54,9 @@ export const SOUNDS: Sound[] = [
     name: "Windows XP Shutdown",
     url: "/sounds/windows-xp-shutdown.mp3",
   },
+  {
+    id: "parampara-pratishtha-anushasan",
+    name: "Parampara Pratishtha Anushasan",
+    url: "/sounds/parampara-pratishtha-anushasan.mp3",
+  },
 ];
