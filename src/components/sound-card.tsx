@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { useSoundStore } from "@/store/sound-store";
+import { useAudio } from "@/hooks/use-audio";
 import { Pause, Play } from "lucide-react";
 import * as React from "react";
-import useSound from "use-sound";
 
 type Props = {
   sound: import("@/data/sounds").Sound;
@@ -35,17 +35,13 @@ export function SoundCard({ sound }: Props) {
   const displayName = formatSoundName(sound.name);
   const soundId = getSoundId(sound.name);
 
-  // Memoize onend and options so use-sound doesn't recreate on every render
+  // Memoize onend callback for our custom audio hook
   const handleEnded = React.useCallback(() => onEnded(sound.key), [onEnded, sound.key]);
-  const soundOptions = React.useMemo(
-    () => ({
-      interrupt: true,
-      onend: handleEnded,
-    }),
-    [handleEnded]
-  );
-
-  const [play, { pause, stop }] = useSound(sound.url, soundOptions);
+  
+  const { play, pause, stop, isPlaying: audioPlaying, isLoading } = useAudio(sound.url, {
+    onEnded: handleEnded,
+    interrupt: true,
+  });
 
   const active = currentKey === sound.key && isPlaying;
 
