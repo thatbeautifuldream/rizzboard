@@ -7,21 +7,36 @@ import * as React from "react";
 import useSound from "use-sound";
 
 type Props = {
-  id: string;
-  name: string;
-  url: string;
+  sound: import("@/data/sounds").Sound;
 };
 
-export function SoundCard({ id, name, url }: Props) {
+export function SoundCard({ sound }: Props) {
   // Select primitives/functions separately to ensure stable snapshots
-  const currentId = useSoundStore((s) => s.currentId);
+  const currentKey = useSoundStore((s) => s.currentKey);
   const isPlaying = useSoundStore((s) => s.isPlaying);
   const toggle = useSoundStore((s) => s.toggle);
   const onEnded = useSoundStore((s) => s.onEnded);
   const incrementUsage = useSoundStore((s) => s.incrementUsage);
 
+  // Import utility functions
+  const { formatSoundName, getSoundId } = React.useMemo(() => {
+    return {
+      formatSoundName: (filename: string) => {
+        return filename
+          .replace('.mp3', '')
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      },
+      getSoundId: (filename: string) => filename.replace('.mp3', '')
+    };
+  }, []);
+
+  const displayName = formatSoundName(sound.name);
+  const soundId = getSoundId(sound.name);
+
   // Memoize onend and options so use-sound doesn't recreate on every render
-  const handleEnded = React.useCallback(() => onEnded(id), [onEnded, id]);
+  const handleEnded = React.useCallback(() => onEnded(sound.key), [onEnded, sound.key]);
   const soundOptions = React.useMemo(
     () => ({
       interrupt: true,
@@ -30,19 +45,19 @@ export function SoundCard({ id, name, url }: Props) {
     [handleEnded]
   );
 
-  const [play, { pause, stop }] = useSound(url, soundOptions);
+  const [play, { pause, stop }] = useSound(sound.url, soundOptions);
 
-  const active = currentId === id && isPlaying;
+  const active = currentKey === sound.key && isPlaying;
 
   const handleToggle = React.useCallback(() => {
     const wasPlaying = active;
-    toggle(id, { play, pause, stop });
+    toggle(sound.key, { play, pause, stop });
     
     // Only increment usage when starting to play (not when pausing)
-    if (!wasPlaying && (!currentId || currentId !== id)) {
-      incrementUsage(id);
+    if (!wasPlaying && (!currentKey || currentKey !== sound.key)) {
+      incrementUsage(sound.key);
     }
-  }, [id, active, currentId, toggle, play, pause, stop, incrementUsage]);
+  }, [sound.key, active, currentKey, toggle, play, pause, stop, incrementUsage]);
 
   return (
     <div
@@ -64,11 +79,11 @@ export function SoundCard({ id, name, url }: Props) {
         }
       }}
       aria-pressed={active}
-      aria-label={active ? `Pause ${name}` : `Play ${name}`}
+      aria-label={active ? `Pause ${displayName}` : `Play ${displayName}`}
     >
       <div className="flex-1">
         <h2 className="text-sm sm:text-base leading-tight line-clamp-2 break-words">
-          {name}
+          {displayName}
         </h2>
       </div>
       <div className="flex justify-end mt-2">
