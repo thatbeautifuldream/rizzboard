@@ -11,9 +11,10 @@ export function SoundGrid() {
   
   const sortedSounds = useMemo(() => {
     return [...SOUNDS].sort((a, b) => {
-      const aCount = usageCounts[a.id] || 0
-      const bCount = usageCounts[b.id] || 0
-      return bCount - aCount
+      const aCount = usageCounts[a.key] || 0
+      const bCount = usageCounts[b.key] || 0
+      if (bCount !== aCount) return bCount - aCount
+      return a.name.localeCompare(b.name)
     })
   }, [usageCounts])
 
@@ -21,12 +22,12 @@ export function SoundGrid() {
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       {sortedSounds.map((s) => (
         <motion.div
-          key={s.id}
+          key={s.key}
           layout
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="h-full"
         >
-          <SoundCard id={s.id} name={s.name} url={s.url} />
+          <SoundCard sound={s} />
         </motion.div>
       ))}
     </div>
