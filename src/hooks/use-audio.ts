@@ -37,7 +37,7 @@ export function useAudio(
     audio.preload = "metadata";
     audio.src = url;
 
-    const handleCanPlay = () => {
+    const handleReady = () => {
       setIsLoading(false);
     };
 
@@ -59,19 +59,21 @@ export function useAudio(
       setIsPlaying(false);
     };
 
-    audio.addEventListener("canplaythrough", handleCanPlay);
+    audio.addEventListener("loadedmetadata", handleReady);
+    audio.addEventListener("canplay", handleReady);
     audio.addEventListener("error", handleError);
     audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("playing", handlePlay);
     audio.addEventListener("pause", handlePause);
 
     audioRef.current = audio;
 
     return () => {
-      audio.removeEventListener("canplaythrough", handleCanPlay);
+      audio.removeEventListener("loadedmetadata", handleReady);
+      audio.removeEventListener("canplay", handleReady);
       audio.removeEventListener("error", handleError);
       audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("playing", handlePlay);
       audio.removeEventListener("pause", handlePause);
       audio.pause();
       // fully release the audio resource
@@ -84,7 +86,7 @@ export function useAudio(
   }, [url, onEnded]);
 
   const play = useCallback(() => {
-    if (!audioRef.current || isLoading) return;
+    if (!audioRef.current) return;
 
     try {
       // Reset to beginning if audio has ended
@@ -92,7 +94,7 @@ export function useAudio(
         audioRef.current.currentTime = 0;
       }
 
-      audioRef.current.play().catch((err) => {
+      void audioRef.current.play().catch((err) => {
         console.error("Audio play failed:", err);
         setError("Failed to play audio");
       });
@@ -100,7 +102,7 @@ export function useAudio(
       console.error("Audio play failed:", err);
       setError("Failed to play audio");
     }
-  }, [isLoading]);
+  }, []);
 
   const pause = useCallback(() => {
     if (!audioRef.current) return;
