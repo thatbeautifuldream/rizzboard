@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     title: "rizzboard.milind.app",
     description: "Play trendy meme sounds with a polished, responsive UI.",
   },
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
