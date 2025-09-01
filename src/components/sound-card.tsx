@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useSoundStore } from "@/store/sound-store";
 import { useAudio } from "@/hooks/use-audio";
+import { formatSoundName } from "@/data/sounds";
 import { Pause, Play } from "lucide-react";
 import * as React from "react";
 
@@ -18,32 +19,16 @@ export function SoundCard({ sound }: Props) {
   const onEnded = useSoundStore((s) => s.onEnded);
   const incrementUsage = useSoundStore((s) => s.incrementUsage);
 
-  // Import utility functions
-  const { formatSoundName, getSoundId } = React.useMemo(() => {
-    return {
-      formatSoundName: (filename: string) => {
-        return filename
-          .replace('.mp3', '')
-          .split('-')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-      },
-      getSoundId: (filename: string) => filename.replace('.mp3', '')
-    };
-  }, []);
-
   const displayName = formatSoundName(sound.name);
-  const soundId = getSoundId(sound.name);
 
   // Memoize onend callback for our custom audio hook
   const handleEnded = React.useCallback(() => onEnded(sound.key), [onEnded, sound.key]);
   
   const { play, pause, stop, isPlaying: audioPlaying, isLoading } = useAudio(sound.url, {
     onEnded: handleEnded,
-    interrupt: true,
   });
 
-  const active = currentKey === sound.key && isPlaying;
+  const active = currentKey === sound.key && audioPlaying;
 
   const handleToggle = React.useCallback(() => {
     const wasPlaying = active;
@@ -69,12 +54,13 @@ export function SoundCard({ sound }: Props) {
       tabIndex={0}
       onClick={handleToggle}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
           e.preventDefault();
           handleToggle();
         }
       }}
       aria-pressed={active}
+      aria-busy={isLoading}
       aria-label={active ? `Pause ${displayName}` : `Play ${displayName}`}
     >
       <div className="flex-1">

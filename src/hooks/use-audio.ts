@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseAudioOptions {
   onEnded?: () => void;
-  interrupt?: boolean;
 }
 
 interface UseAudioReturn {
@@ -17,7 +16,7 @@ interface UseAudioReturn {
 }
 
 export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioReturn {
-  const { onEnded, interrupt = true } = options;
+  const { onEnded } = options;
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,12 +116,5 @@ export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioRe
     }
   }, []);
 
-  return {
-    play,
-    pause,
-    stop,
-    isLoading,
-    isPlaying,
-    error,
-  };
+  return { play, pause, stop, isLoading, isPlaying, error };
 }

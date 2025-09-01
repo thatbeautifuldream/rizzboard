@@ -13,7 +13,8 @@ export function SoundGrid() {
     return [...SOUNDS].sort((a, b) => {
       const aCount = usageCounts[a.key] || 0
       const bCount = usageCounts[b.key] || 0
-      return bCount - aCount
+      if (bCount !== aCount) return bCount - aCount
+      return a.name.localeCompare(b.name)
     })
   }, [usageCounts])
 
