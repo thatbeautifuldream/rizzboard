@@ -15,9 +15,12 @@ interface UseAudioReturn {
   error: string | null;
 }
 
-export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioReturn {
+export function useAudio(
+  url: string,
+  options: UseAudioOptions = {}
+): UseAudioReturn {
   const { onEnded } = options;
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,7 +36,7 @@ export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioRe
     const audio = new Audio();
     audio.preload = "metadata";
     audio.src = url;
-    
+
     const handleCanPlay = () => {
       setIsLoading(false);
     };
@@ -71,19 +74,24 @@ export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioRe
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("pause", handlePause);
       audio.pause();
+      // fully release the audio resource
+      try {
+        audio.src = "";
+        audio.load();
+      } catch {}
       audioRef.current = null;
     };
   }, [url, onEnded]);
 
   const play = useCallback(() => {
     if (!audioRef.current || isLoading) return;
-    
+
     try {
       // Reset to beginning if audio has ended
       if (audioRef.current.ended) {
         audioRef.current.currentTime = 0;
       }
-      
+
       audioRef.current.play().catch((err) => {
         console.error("Audio play failed:", err);
         setError("Failed to play audio");
@@ -96,7 +104,7 @@ export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioRe
 
   const pause = useCallback(() => {
     if (!audioRef.current) return;
-    
+
     try {
       audioRef.current.pause();
     } catch (err) {
@@ -106,7 +114,7 @@ export function useAudio(url: string, options: UseAudioOptions = {}): UseAudioRe
 
   const stop = useCallback(() => {
     if (!audioRef.current) return;
-    
+
     try {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
