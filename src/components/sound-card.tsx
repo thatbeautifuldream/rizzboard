@@ -90,9 +90,9 @@ export function SoundCard({ sound }: Props) {
           )}
         >
           {active ? (
-            <Pause className="size-4" aria-hidden="true" />
+            <Pause className="size-4" fill="currentColor" aria-hidden="true" />
           ) : (
-            <Play className="size-4" aria-hidden="true" />
+            <Play className="size-4" fill="currentColor" aria-hidden="true" />
           )}
         </div>
       </div>
