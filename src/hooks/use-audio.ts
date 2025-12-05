@@ -89,10 +89,8 @@ export function useAudio(
     if (!audioRef.current) return;
 
     try {
-      // Reset to beginning if audio has ended
-      if (audioRef.current.ended) {
-        audioRef.current.currentTime = 0;
-      }
+      // Always restart from beginning when playing
+      audioRef.current.currentTime = 0;
 
       void audioRef.current.play().catch((err) => {
         console.error("Audio play failed:", err);

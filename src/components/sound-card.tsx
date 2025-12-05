@@ -14,16 +14,14 @@ type Props = {
 export function SoundCard({ sound }: Props) {
   // Select primitives/functions separately to ensure stable snapshots
   const currentKey = useSoundStore((s) => s.currentKey);
-  const isPlaying = useSoundStore((s) => s.isPlaying);
   const toggle = useSoundStore((s) => s.toggle);
   const onEnded = useSoundStore((s) => s.onEnded);
-  const incrementUsage = useSoundStore((s) => s.incrementUsage);
 
   const displayName = formatSoundName(sound.name);
 
   // Memoize onend callback for our custom audio hook
   const handleEnded = React.useCallback(() => onEnded(sound.key), [onEnded, sound.key]);
-  
+
   const { play, pause, stop, isPlaying: audioPlaying, isLoading } = useAudio(sound.url, {
     onEnded: handleEnded,
   });
@@ -31,14 +29,8 @@ export function SoundCard({ sound }: Props) {
   const active = currentKey === sound.key && audioPlaying;
 
   const handleToggle = React.useCallback(() => {
-    const wasPlaying = active;
     toggle(sound.key, { play, pause, stop });
-    
-    // Only increment usage when starting to play (not when pausing)
-    if (!wasPlaying && (!currentKey || currentKey !== sound.key)) {
-      incrementUsage(sound.key);
-    }
-  }, [sound.key, active, currentKey, toggle, play, pause, stop, incrementUsage]);
+  }, [sound.key, toggle, play, pause, stop]);
 
   return (
     <div

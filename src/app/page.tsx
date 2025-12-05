@@ -15,9 +15,7 @@ export default function Page() {
       <section className="mb-8">
         <p className="text-muted-foreground leading-relaxed text-sm">
           Tap a card to play/pause. Starting another sound stops the current
-          one. Only one sound plays at a time. The soundboard is reactive and
-          tracks what you play locally, automatically reordering sounds based on
-          recency to keep your favorites at the top.
+          one. Only one sound plays at a time.
         </p>
       </section>
 
