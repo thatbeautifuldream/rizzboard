@@ -1,6 +1,7 @@
 import { SoundGrid } from "@/components/sound-grid";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Footer } from "@/components/footer";
+import { HotkeysWrapper } from "@/components/hotkeys-wrapper";
 
 export default function Page() {
   return (
@@ -15,10 +16,11 @@ export default function Page() {
       <section className="mb-8">
         <p className="text-muted-foreground leading-relaxed text-sm">
           Tap a card to play/pause. Starting another sound stops the current
-          one. Only one sound plays at a time.
+          one. Only one sound plays at a time. Press keys 1-9 and 0 for speed dial.
         </p>
       </section>
 
+      <HotkeysWrapper />
       <SoundGrid />
 
       <Footer />
