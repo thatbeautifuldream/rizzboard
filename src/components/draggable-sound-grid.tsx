@@ -13,14 +13,6 @@ export function DraggableSoundGrid() {
   const instanceId = useDragInstanceId()
   const soundOrder = useSoundStore((state) => state.soundOrder)
   const reorderSounds = useSoundStore((state) => state.reorderSounds)
-  const setSoundOrder = useSoundStore((state) => state.setSoundOrder)
-
-  useEffect(() => {
-    if (soundOrder.length === 0) {
-      const initialOrder = SOUNDS.map(sound => sound.key)
-      setSoundOrder(initialOrder)
-    }
-  }, [soundOrder.length, setSoundOrder])
 
   const orderedSounds = useMemo(() => {
     if (soundOrder.length === 0) {

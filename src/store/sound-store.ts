@@ -2,6 +2,7 @@
 
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
+import { SOUNDS } from "@/data/sounds"
 
 type Controls = {
   play: () => void
@@ -24,6 +25,8 @@ type SoundState = {
   resetSoundOrder: () => void
 }
 
+const DEFAULT_SOUND_ORDER = SOUNDS.map(sound => sound.key)
+
 export const useSoundStore = create<SoundState>()(
   persist(
     (set, get) => {
@@ -33,7 +36,7 @@ export const useSoundStore = create<SoundState>()(
         currentKey: null,
         isPlaying: false,
         currentControls: undefined,
-        soundOrder: [],
+        soundOrder: DEFAULT_SOUND_ORDER,
 
         registerControls: (key: string, controls: Controls) => {
           registeredControls.set(key, controls)
@@ -97,19 +100,20 @@ export const useSoundStore = create<SoundState>()(
         },
 
         resetSoundOrder: () => {
-          set({ soundOrder: [] })
+          set({ soundOrder: DEFAULT_SOUND_ORDER })
         },
       }
     },
     {
-      name: 'rizzboard-sound-store',
+      name: "rizzboard-sound-store",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ soundOrder: state.soundOrder }),
       onRehydrateStorage: () => (state) => {
-        if (state && !state.soundOrder) {
-          state.soundOrder = []
+        if (!state || !state.soundOrder || state.soundOrder.length === 0) {
+          return { soundOrder: DEFAULT_SOUND_ORDER }
         }
-      }
+        return state
+      },
     }
   )
 )
