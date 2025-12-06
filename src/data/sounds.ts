@@ -1,27 +1,26 @@
 export type Sound = {
-  name: string;
-  key: string;
-  customId: string | null;
-  url: string;
-  size: number;
-  uploadedAt: string;
-};
+  name: string
+  key: string
+  customId: string | null
+  url: string
+  size: number
+  uploadedAt: string
+}
 
-const AUDIO_BASE_URL =
-  process.env.NEXT_PUBLIC_AUDIO_BASE_URL ?? "https://im956ov0mu.ufs.sh/f/";
+const AUDIO_BASE_URL = process.env.NEXT_PUBLIC_AUDIO_BASE_URL ?? "https://im956ov0mu.ufs.sh/f/"
 
-type SourceSound = Omit<Sound, "url">;
+type SourceSound = Omit<Sound, "url">
 
 export function formatSoundName(filename: string): string {
   return filename
     .replace(/\.mp3$/i, "")
     .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
 }
 
 export function getSoundId(filename: string): string {
-  return filename.replace(/\.mp3$/i, "");
+  return filename.replace(/\.mp3$/i, "")
 }
 
 const SOURCE_SOUNDS: SourceSound[] = [
@@ -152,15 +151,15 @@ const SOURCE_SOUNDS: SourceSound[] = [
     uploadedAt: "2025-09-01T21:29:02.000Z",
   },
   {
-    "name": "fahhh.mp3",
-    "key": "ef01Q7KyVWPKBfiPcgdIczA105XliUuLC4HZD9VQo72OInyx",
-    "customId": null,
-    "size": 48284,
-    "uploadedAt": "2025-12-05T00:42:07.000Z"
-  }
-];
+    name: "fahhh.mp3",
+    key: "ef01Q7KyVWPKBfiPcgdIczA105XliUuLC4HZD9VQo72OInyx",
+    customId: null,
+    size: 48284,
+    uploadedAt: "2025-12-05T00:42:07.000Z",
+  },
+]
 
-export const SOUNDS: readonly Sound[] = SOURCE_SOUNDS.map((s) => ({
+export const SOUNDS: readonly Sound[] = SOURCE_SOUNDS.map(s => ({
   ...s,
   url: `${AUDIO_BASE_URL}${s.key}`,
-}));
+}))
